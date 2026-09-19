@@ -49,8 +49,8 @@ def free_port() -> int:
 
 
 def ensure_db():
-    db = os.path.join(ROOT, "data", "aerchain.db")
-    if os.path.exists(db):
+    from app.database import DB_PATH  # honors AERCHAIN_DB in every mode
+    if os.path.exists(DB_PATH):
         return
     print("Building database (first run)…", flush=True)
     from app import pipeline
