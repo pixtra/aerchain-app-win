@@ -14,29 +14,27 @@ setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
 echo [1/6] Python
-where python >nul 2>nul
-if errorlevel 1 (
-  echo   Python not found - trying to install it automatically...
-  where winget >nul 2>nul
-  if errorlevel 1 (
-    echo ERROR: install Python 3.10+ from https://www.python.org/downloads/ ^(tick "Add python.exe to PATH"^) and re-run.
-    exit /b 1
-  )
-  winget install -e --id Python.Python.3.12 --accept-source-agreements --accept-package-agreements --silent
-  for /d %%d in ("%LOCALAPPDATA%\Programs\Python\3*") do set "PATH=%%d;%%d\Scripts;%PATH%"
-  where python >nul 2>nul
-  if errorlevel 1 (
-    echo ERROR: automatic Python install failed. Install from https://www.python.org/downloads/ ^(tick "Add python.exe to PATH"^) and re-run.
-    exit /b 1
-  )
+call :find_python
+if defined PYOK goto :pyready
+echo   Usable Python 3.10+ not found - trying to install it automatically...
+where winget >nul 2>nul
+if errorlevel 1 goto :pymanual
+winget install -e --id Python.Python.3.12 --accept-source-agreements --accept-package-agreements --silent
+for /d %%d in ("%LOCALAPPDATA%\Programs\Python\*") do (
+  if exist "%%d\python.exe" set "PATH=%%d;%%d\Scripts;%PATH%"
+  for /d %%e in ("%%d\*") do if exist "%%e\python.exe" set "PATH=%%e;%%e\Scripts;%PATH%"
+)
+call :find_python
+if defined PYOK (
   echo   [ok] Python installed automatically
+  goto :pyready
 )
-for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYV=%%v
-python -c "import sys; exit(0 if sys.version_info>=(3,10) else 1)"
-if errorlevel 1 (
-  echo ERROR: Python %PYV% too old - need 3.10+. Install fresh from https://www.python.org/downloads/
-  exit /b 1
-)
+echo ERROR: automatic Python install failed. Install from https://www.python.org/downloads/ - tick "Add python.exe to PATH" - and re-run.
+exit /b 1
+:pymanual
+echo ERROR: install Python 3.10+ from https://www.python.org/downloads/ - tick "Add python.exe to PATH" - and re-run.
+exit /b 1
+:pyready
 echo   [ok] Python %PYV%
 
 echo [2/6] Python environment
@@ -118,4 +116,15 @@ if not exist "data\aerchain.db" (
 
 echo.
 echo Setup complete. Start the app with:  run.bat
+exit /b 0
+
+:find_python
+set PYOK=
+set PYV=
+python --version >nul 2>nul
+if errorlevel 1 exit /b 1
+for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYV=%%v
+python -c "import sys; exit(0 if sys.version_info>=(3,10) else 1)" >nul 2>nul
+if errorlevel 1 exit /b 1
+set PYOK=1
 exit /b 0
