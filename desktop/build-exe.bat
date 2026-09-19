@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Build AerchainDesktop.exe (one folder, double-clickable).
 REM Run once on the Windows machine. Needs internet (pip + PyInstaller).
 REM Ollama, Tesseract and the model stay EXTERNAL (see DESKTOP.md).
@@ -21,3 +31,4 @@ if errorlevel 1 (
 echo.
 echo Built: dist\AerchainDesktop\AerchainDesktop.exe
 echo Ship the whole dist\AerchainDesktop folder. First launch builds its database next to the exe.
+exit /b 0

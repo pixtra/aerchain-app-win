@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Share Aerchain publicly via Cloudflare (app must run via run.bat first).
 REM Usage: share.bat [PORT]   Ctrl-C closes the link.
 setlocal
@@ -38,3 +48,4 @@ findstr /r /c:"https://.*trycloudflare\.com" ".run\share-%PORT%.log"
 echo.
 echo Warning: no login - anyone with the link has full access.
 echo To take the link down, close the separate "Aerchain tunnel" window.
+exit /b 0

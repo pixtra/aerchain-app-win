@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Aerchain Kill-the-Quote - daily start. Usage: run.bat [PORT]
 REM Ctrl-C stops the app server.
 setlocal
@@ -48,3 +58,4 @@ if not errorlevel 1 (
 echo Starting Aerchain on port %PORT%...
 start "" /min powershell -c "Start-Sleep -Seconds 8; Start-Process 'http://localhost:%PORT%/'"
 .venv\Scripts\python -m uvicorn app.main:app --host 0.0.0.0 --port %PORT% --log-level warning
+exit /b 0

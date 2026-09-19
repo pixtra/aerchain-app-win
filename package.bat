@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Pack the whole Windows tree for another computer: code + scripts + docs,
 REM no secrets, no junk. Recipient extracts and runs web\setup.bat.
 REM Usage: package.bat [output-dir]   (default: Desktop)
@@ -21,3 +31,4 @@ if errorlevel 1 (
 echo Packed: %TARBALL%
 echo Recipient needs: Python 3.10+ (~8GB disk, internet), Tesseract/Ollama optional
 echo Recipient runs:  extract, then web\setup.bat, then web\run.bat
+exit /b 0

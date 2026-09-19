@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Aerchain desktop app - native window, no browser needed.
 REM First run creates the environment (needs internet once).
 setlocal
@@ -13,3 +23,4 @@ if not exist ".venv\Scripts\python.exe" (
   )
 )
 .venv\Scripts\python desktop.py
+exit /b 0

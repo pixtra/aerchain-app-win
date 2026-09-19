@@ -1,4 +1,14 @@
 @echo off
+call :main %*
+set EC=%ERRORLEVEL%
+if not "%EC%"=="0" if not "%EC%"=="130" (
+  echo.
+  echo Stopped with an error. Press any key to close...
+  pause >nul
+)
+exit /b %EC%
+
+:main
 REM Aerchain Kill-the-Quote - one-time Windows setup. Safe to re-run.
 setlocal enabledelayedexpansion
 cd /d "%~dp0"
@@ -95,3 +105,4 @@ if not exist "data\aerchain.db" (
 
 echo.
 echo Setup complete. Start the app with:  run.bat
+exit /b 0
