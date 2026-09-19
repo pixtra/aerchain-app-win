@@ -24,6 +24,7 @@ setup.bat      :: once: Python (+auto-install), Ollama (+auto-install), venv, pa
                ::  or skip downloads entirely with Groq cloud)
 run.bat        :: daily: http://localhost:8000/  (run.bat 8001 for a 2nd copy)
 share.bat      :: public link for someone far away (needs run.bat going)
+package.bat    :: hand to another computer (clean tarball, no secrets) run from repo root
 cd ..\desktop
 desktop.bat    :: native window, no browser (build-exe.bat makes AerchainDesktop.exe)
 ```
