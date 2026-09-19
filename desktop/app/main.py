@@ -668,8 +668,10 @@ def export(table: str, format: str = Query("csv", pattern="^(csv|xlsx)$")):
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename={name}.csv"})
 
-# optionally serve the built dashboard
-app.mount("/ui", StaticFiles(directory="static", html=True), name="ui")
+# optionally serve the built dashboard (STATIC_DIR for frozen exe builds)
+import os as _os
+app.mount("/ui", StaticFiles(
+    directory=_os.environ.get("STATIC_DIR", "static"), html=True), name="ui")
 
 
 @app.get("/", include_in_schema=False)

@@ -22,6 +22,9 @@ TIMEOUT = 300  # generous: local CPU models can take a minute per tool turn
 
 def _env_path():
     import pathlib
+    override = os.environ.get("KTQ_ENV_FILE")
+    if override:
+        return pathlib.Path(override)
     return pathlib.Path(__file__).resolve().parent.parent.parent / ".env"
 
 
@@ -96,8 +99,10 @@ POLLINATIONS_URL = "https://text.pollinations.ai/openai"
 
 
 def provider_mode() -> str:
-    mode = os.environ.get("KTQ_PROVIDER_MODE", "auto").strip().lower()
-    return mode if mode in PROVIDER_MODES else "auto"
+    import sys as _sys
+    default = ("keyless" if getattr(_sys, "frozen", False) else "auto")
+    mode = os.environ.get("KTQ_PROVIDER_MODE", default).strip().lower()
+    return mode if mode in PROVIDER_MODES else default
 
 
 def save_env_values(updates: dict, path=None) -> None:

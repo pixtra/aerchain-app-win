@@ -11,19 +11,20 @@ First run creates `.venv` and installs everything. Close the window to stop.
 Needs: Python 3.10+ (tick "Add to PATH"), Tesseract (UB-Mannheim installer,
 auto-detected), and Ollama + model *or* a Groq key (Settings tab).
 
-## Ship as AerchainDesktop.exe
+## Ship as a single AerchainDesktop.exe
 ```bat
 build-exe.bat
 ```
-Produces `dist\AerchainDesktop\` — hand over that **whole folder**
-(single `AerchainDesktop.exe` inside plus its support files). First launch
-builds its database next to the exe. Console window stays visible on purpose:
-if anything fails, the error is right there instead of a silent exit.
+Produces `dist\AerchainDesktop.exe` — **one file, hand it over**. First launch
+creates `%APPDATA%\AerchainDesktop` (database + settings) and defaults to
+keyless demo cloud, so it works immediately with zero installs.
 
-Still external (by design, not bundled):
-- **Ollama + model** (~5 GB) — or use Groq cloud, no install at all.
-- **Tesseract** — for photo/scan uploads only; everything else works without it.
-- **`.env`** — created next to the exe on first run (Groq key lives there).
+Still external (by design, never inside the exe):
+- **Ollama + model** (~5 GB) — only for offline mode; switch in Settings.
+- **Tesseract** — only for photo/scan uploads (degraded mode otherwise).
+  Optionally drop a portable build in `tess\` before running `build-exe.bat`
+  and it gets bundled (`tess\tesseract.exe` + tessdata).
+- **Groq key** — typed into Settings on first run if you want cloud speed.
 
 ## Notes
 - Backend serves on 127.0.0.1, random free port — LAN/tunnel sharing does not

@@ -14,16 +14,30 @@ import threading
 import time
 
 if getattr(sys, "frozen", False):
-    # PyInstaller build: writable project dir = the exe's folder
-    # (bundled code lives read-only inside; DB/.env belong next to the exe).
-    ROOT = os.path.dirname(os.path.abspath(sys.executable))
+    # PyInstaller onefile build: code + static live read-only in the bundle
+    # (sys._MEIPASS); ALL writable state goes to %APPDATA%\AerchainDesktop so
+    # the exe works from any folder, including read-only ones.
+    _MEIPASS = sys._MEIPASS  # type: ignore[attr-defined]
+    _DATA = os.path.join(os.environ.get("APPDATA") or os.path.expanduser("~"),
+                         "AerchainDesktop")
+    os.makedirs(_DATA, exist_ok=True)
+    os.environ.setdefault("AERCHAIN_DB", os.path.join(_DATA, "aerchain.db"))
+    os.environ.setdefault("STATIC_DIR", os.path.join(_MEIPASS, "static"))
+    os.environ.setdefault("KTQ_ENV_FILE", os.path.join(_DATA, ".env"))
+    _TESS = os.path.join(_MEIPASS, "tess", "tesseract.exe")
+    if os.path.exists(_TESS):
+        os.environ.setdefault("TESSERACT_CMD", _TESS)
+        os.environ.setdefault("TESSDATA_PREFIX",
+                              os.path.join(_MEIPASS, "tess"))
+    os.chdir(_DATA)
+    sys.path.insert(0, _MEIPASS)
 else:
     ROOT = os.path.dirname(os.path.abspath(__file__))
-os.chdir(ROOT)
-sys.path.insert(0, ROOT)
-# own database: never touch any other copy's DB (must precede app imports,
-# since database.py resolves DB_PATH at import time)
-os.environ.setdefault("AERCHAIN_DB", os.path.join(ROOT, "data", "aerchain.db"))
+    # own database: never touch any other copy's DB (must precede app imports,
+    # since database.py resolves DB_PATH at import time)
+    os.environ.setdefault("AERCHAIN_DB", os.path.join(ROOT, "data", "aerchain.db"))
+    os.chdir(ROOT)
+    sys.path.insert(0, ROOT)
 
 APP_TITLE = "Aerchain · Kill-the-Quote"
 
