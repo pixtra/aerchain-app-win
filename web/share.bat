@@ -16,7 +16,7 @@ cd /d "%~dp0"
 if "%~1"=="" (set PORT=8000) else (set PORT=%~1)
 if not exist bin mkdir bin
 if not exist "bin\cloudflared.exe" (
-  echo Fetching cloudflared (one time)...
+  echo Fetching cloudflared, one time...
   curl -sL -o bin\cloudflared.exe https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe
   if errorlevel 1 (
     echo ERROR: download failed - check internet and retry.

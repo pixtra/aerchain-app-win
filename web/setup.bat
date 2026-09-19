@@ -66,14 +66,14 @@ if errorlevel 1 (
   curl -sL -o "%TEMP%\OllamaSetup.exe" https://ollama.com/download/OllamaSetup.exe
   if errorlevel 1 (
     echo   [warn] download failed - install OllamaSetup.exe from https://ollama.com/download
-    echo   then re-run setup.bat (or use Groq cloud in Settings instead^).
+    echo   then re-run setup.bat, or use Groq cloud in Settings instead.
   ) else (
     start "" /wait "%TEMP%\OllamaSetup.exe" /SILENT
     set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
     where ollama >nul 2>nul
     if errorlevel 1 (
       echo   [warn] automatic install didn't finish - run OllamaSetup.exe from https://ollama.com/download
-      echo   then re-run setup.bat (or use Groq cloud in Settings instead^).
+      echo   then re-run setup.bat, or use Groq cloud in Settings instead.
     ) else (
       echo   [ok] Ollama installed automatically
     )
@@ -83,8 +83,8 @@ if errorlevel 1 (
 )
 
 echo [5/6] Model (qwen2.5:7b-instruct - installed later from Settings)
-echo   [skip] models install in-demo: Settings -^> Local model -^> Install.
-echo   (Or switch to Groq cloud - no download at all.)
+echo   [skip] models install in-demo: Settings - Local model - Install.
+echo   Or switch to Groq cloud - no download at all.
 
 echo [6/6] Config + database
 if not exist ".env" (

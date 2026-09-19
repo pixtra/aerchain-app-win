@@ -17,7 +17,7 @@ REM (or use Groq/keyless cloud - the exe defaults to keyless demo mode).
 setlocal
 cd /d "%~dp0"
 if not exist ".venv\Scripts\python.exe" (
-  echo Run desktop.bat once first (creates the environment).
+  echo Run desktop.bat once first, it creates the environment.
   exit /b 1
 )
 .venv\Scripts\python -m pip install -q pyinstaller
