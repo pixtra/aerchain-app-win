@@ -53,10 +53,23 @@ set TESS=
 where tesseract >nul 2>nul && set TESS=tesseract
 if not defined TESS if exist "C:\Program Files\Tesseract-OCR\tesseract.exe" set "TESS=C:\Program Files\Tesseract-OCR\tesseract.exe"
 if defined TESS (
-  echo   [ok] Tesseract found
+  echo   [ok] Tesseract ready
 ) else (
-  echo   [warn] Tesseract not found - image OCR will use degraded mode.
-  echo   Install from https://github.com/UB-Mannheim/tesseract/wiki then re-run setup.bat
+  echo   Tesseract not found - trying to install it automatically...
+  where winget >nul 2>nul
+  if errorlevel 1 (
+    echo   [warn] no winget and no Tesseract - image OCR will use degraded mode.
+    echo   Install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki then re-run setup.bat
+  ) else (
+    winget install -e --id UB-Mannheim.TesseractOCR --accept-source-agreements --accept-package-agreements --silent
+    if exist "C:\Program Files\Tesseract-OCR\tesseract.exe" (
+      set "TESS=C:\Program Files\Tesseract-OCR\tesseract.exe"
+      echo   [ok] Tesseract installed automatically
+    ) else (
+      echo   [warn] automatic install did not finish - install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki
+      echo   then re-run setup.bat. Everything else works without it.
+    )
+  )
 )
 
 echo [4/6] Local model server (Ollama)
