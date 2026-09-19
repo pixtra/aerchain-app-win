@@ -1,0 +1,29 @@
+# Aerchain Kill-the-Quote — persistent hosting (VPS / Fly.io / Render).
+# See DEPLOY.md. Cloud (Groq) mode recommended: ~1GB RAM, no model download.
+# Offline mode: ~8GB RAM for the local 7B model.
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - aerchain-data:/app/data
+      - aerchain-models:/root/.ollama
+    environment:
+      # Pick ONE mode:
+      # Cloud (recommended for hosting):
+      - KTQ_PROVIDER_MODE=${KTQ_PROVIDER_MODE:-groq}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      # Offline instead: KTQ_PROVIDER_MODE=offline (needs the RAM).
+      - KTQ_OLLAMA_MODEL=${KTQ_OLLAMA_MODEL:-qwen2.5:7b-instruct}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  aerchain-data:
+  aerchain-models:

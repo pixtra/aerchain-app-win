@@ -1,0 +1,23 @@
+# secrets — never commit (setup.bat recreates from .env.example)
+.env
+
+# runtime state — rebuilt locally
+*.db
+*.log
+data/uploads/
+data/raw/
+.run/
+dist/
+build/
+*.spec
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# os
+Thumbs.db
+Desktop.ini
