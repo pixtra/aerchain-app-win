@@ -19,7 +19,9 @@ files — they're for Linux/macOS).
 ## Run
 ```bat
 cd web
-setup.bat      :: once: venv, packages, model (~4.7 GB), database
+setup.bat      :: once: Python (+auto-install), Ollama (+auto-install), venv, packages, database
+               :: (the ~4.7 GB model installs later from Settings -> Local model,
+               ::  or skip downloads entirely with Groq cloud)
 run.bat        :: daily: http://localhost:8000/  (run.bat 8001 for a 2nd copy)
 share.bat      :: public link for someone far away (needs run.bat going)
 cd ..\desktop

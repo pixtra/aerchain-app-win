@@ -6,8 +6,20 @@ cd /d "%~dp0"
 echo [1/6] Python
 where python >nul 2>nul
 if errorlevel 1 (
-  echo ERROR: install Python 3.10+ from https://www.python.org/downloads/ ^(tick "Add python.exe to PATH"^) and re-run.
-  exit /b 1
+  echo   Python not found - trying to install it automatically...
+  where winget >nul 2>nul
+  if errorlevel 1 (
+    echo ERROR: install Python 3.10+ from https://www.python.org/downloads/ ^(tick "Add python.exe to PATH"^) and re-run.
+    exit /b 1
+  )
+  winget install -e --id Python.Python.3.12 --accept-source-agreements --accept-package-agreements --silent
+  for /d %%d in ("%LOCALAPPDATA%\Programs\Python\3*") do set "PATH=%%d;%%d\Scripts;%PATH%"
+  where python >nul 2>nul
+  if errorlevel 1 (
+    echo ERROR: automatic Python install failed. Install from https://www.python.org/downloads/ ^(tick "Add python.exe to PATH"^) and re-run.
+    exit /b 1
+  )
+  echo   [ok] Python installed automatically
 )
 for /f "tokens=2" %%v in ('python --version 2^>^&1') do set PYV=%%v
 python -c "import sys; exit(0 if sys.version_info>=(3,10) else 1)"
@@ -40,25 +52,29 @@ if defined TESS (
 echo [4/6] Local model server (Ollama)
 where ollama >nul 2>nul
 if errorlevel 1 (
-  echo   [warn] Ollama not found - install OllamaSetup.exe from https://ollama.com/download
-  echo   then re-run setup.bat (or use Groq cloud in Settings instead^).
+  echo   Ollama not found - trying to install it automatically...
+  curl -sL -o "%TEMP%\OllamaSetup.exe" https://ollama.com/download/OllamaSetup.exe
+  if errorlevel 1 (
+    echo   [warn] download failed - install OllamaSetup.exe from https://ollama.com/download
+    echo   then re-run setup.bat (or use Groq cloud in Settings instead^).
+  ) else (
+    start "" /wait "%TEMP%\OllamaSetup.exe" /SILENT
+    set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
+    where ollama >nul 2>nul
+    if errorlevel 1 (
+      echo   [warn] automatic install didn't finish - run OllamaSetup.exe from https://ollama.com/download
+      echo   then re-run setup.bat (or use Groq cloud in Settings instead^).
+    ) else (
+      echo   [ok] Ollama installed automatically
+    )
+  )
 ) else (
   echo   [ok] Ollama found
 )
 
-echo [5/6] Model (qwen2.5:7b-instruct, ~4.7 GB one-time download)
-where ollama >nul 2>nul
-if errorlevel 1 (
-  echo   [skip] no Ollama yet - skipping download.
-) else (
-  ollama list 2>nul | findstr /c:"qwen2.5" >nul
-  if errorlevel 1 (
-    echo   Downloading model (~4.7 GB, one time)...
-    ollama pull qwen2.5:7b-instruct
-  ) else (
-    echo   [ok] model already downloaded
-  )
-)
+echo [5/6] Model (qwen2.5:7b-instruct - installed later from Settings)
+echo   [skip] models install in-demo: Settings -^> Local model -^> Install.
+echo   (Or switch to Groq cloud - no download at all.)
 
 echo [6/6] Config + database
 if not exist ".env" (

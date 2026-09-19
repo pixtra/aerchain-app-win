@@ -35,10 +35,14 @@ if errorlevel 1 (
   start "Ollama" /min ollama serve
   timeout /t 5 /nobreak >nul
 )
-ollama list 2>nul | findstr /c:"qwen2.5" >nul
-if errorlevel 1 (
-  echo Downloading model qwen2.5:7b-instruct (~4.7 GB, one time)...
-  ollama pull qwen2.5:7b-instruct
+ollama list >nul 2>nul
+if not errorlevel 1 (
+  ollama list 2>nul | findstr /c:"qwen2.5" >nul
+  if errorlevel 1 (
+    echo NOTE: local model not downloaded yet - chat answers will say LLM offline
+    echo until you install it: open Settings -^> Local model -^> Install.
+    echo (Or switch to Groq cloud in Settings - no download at all.)
+  )
 )
 
 echo Starting Aerchain on port %PORT%...
