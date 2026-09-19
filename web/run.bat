@@ -9,11 +9,16 @@ if not "%EC%"=="0" if not "%EC%"=="130" (
 exit /b %EC%
 
 :main
-REM Aerchain Kill-the-Quote - daily start. Usage: run.bat [PORT]
-REM Ctrl-C stops the app server.
+REM Aerchain Kill-the-Quote - daily start. Usage: run.bat [PORT] [--headless]
+REM Interactive: browser opens, Ctrl-C stops. Headless: pythonw, no console,
+REM no browser (stop it with stop.bat [PORT]).
 setlocal
 cd /d "%~dp0"
-if "%~1"=="" (set PORT=8000) else (set PORT=%~1)
+set HEADLESS=
+if "%~1"=="--headless" set HEADLESS=1
+if "%~2"=="--headless" set HEADLESS=1
+if "%~1"=="" (set PORT=8000) else if not "%~1"=="--headless" (set PORT=%~1)
+if not defined PORT set PORT=8000
 
 if not exist ".venv\Scripts\python.exe" (
   echo ERROR: not set up yet - run setup.bat first.
@@ -60,6 +65,13 @@ if not errorlevel 1 (
 )
 
 echo Starting Aerchain on port %PORT%...
+if defined HEADLESS goto :headless
 start "" /min powershell -c "Start-Sleep -Seconds 8; Start-Process 'http://localhost:%PORT%/'"
 .venv\Scripts\python -m uvicorn app.main:app --host 0.0.0.0 --port %PORT% --log-level warning
+exit /b 0
+
+:headless
+if not exist .run mkdir .run
+start "" /min cmd /c ".venv\Scripts\pythonw.exe -m uvicorn app.main:app --host 0.0.0.0 --port %PORT% --log-level warning > .run\app-%PORT%.log 2>&1"
+echo Running headless on http://localhost:%PORT%/ - stop it with: stop.bat %PORT%
 exit /b 0
