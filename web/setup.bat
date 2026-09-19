@@ -44,7 +44,14 @@ if errorlevel 1 (
   echo ERROR: dependency install failed - check the messages above.
   exit /b 1
 )
-echo   [ok] dependencies installed
+REM import smoke test: a half-finished pip run leaves a venv that LOOKS fine
+REM but is missing packages. Catch it here, not at run time.
+.venv\Scripts\python -c "import uvicorn, fastapi, httpx, pydantic, openpyxl, pypdf, PIL, pytesseract, docx, fitz" 2>nul
+if errorlevel 1 (
+  echo ERROR: packages incomplete - delete the .venv folder and re-run setup.bat.
+  exit /b 1
+)
+echo   [ok] dependencies installed and verified
 
 echo [3/6] OCR engine (Tesseract)
 set TESS=

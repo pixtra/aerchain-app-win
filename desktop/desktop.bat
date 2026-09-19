@@ -22,5 +22,10 @@ if not exist ".venv\Scripts\python.exe" (
     exit /b 1
   )
 )
+.venv\Scripts\python -c "import uvicorn, fastapi, webview" 2>nul
+if errorlevel 1 (
+  echo ERROR: packages incomplete - delete the .venv folder and re-run desktop.bat.
+  exit /b 1
+)
 .venv\Scripts\python desktop.py
 exit /b 0

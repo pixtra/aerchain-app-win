@@ -23,7 +23,7 @@ if errorlevel 1 (
   echo ERROR: tar.exe not found, needs Windows 10 1803+.
   exit /b 1
 )
-tar -czf "%TARBALL%" --exclude=.venv --exclude=__pycache__ --exclude=.pytest_cache --exclude=.git --exclude=.run --exclude=*.db --exclude=uploads --exclude=*.log --exclude=dist --exclude=build --exclude=.env web desktop README.md WINDOWS.md .gitignore
+tar -czf "%TARBALL%" --exclude=.venv --exclude=__pycache__ --exclude=.pytest_cache --exclude=.git --exclude=.run --exclude=*.db --exclude=uploads --exclude=*.log --exclude=dist --exclude=build --exclude=installer-out --exclude=*Setup.exe --exclude=tess --exclude=.env web desktop README.md WINDOWS.md .gitignore
 if errorlevel 1 (
   echo ERROR: packing failed.
   exit /b 1

@@ -23,6 +23,10 @@ if not exist ".env" copy /y .env.example .env >nul
 if not exist "data\aerchain.db" (
   echo Building database, first run...
   .venv\Scripts\python -m app.pipeline
+  if errorlevel 1 (
+    echo ERROR: database build failed - check the messages above.
+    exit /b 1
+  )
 )
 
 REM already running?
