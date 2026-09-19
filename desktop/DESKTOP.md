@@ -19,6 +19,14 @@ Produces `dist\AerchainDesktop.exe` — **one file, hand it over**. First launch
 creates `%APPDATA%\AerchainDesktop` (database + settings) and defaults to
 keyless demo cloud, so it works immediately with zero installs.
 
+## Ship as Setup-AerChain-V0-Demo.exe (client installer)
+1. Build the exe above, then open `installer.iss` in **Inno Setup 6**
+   (jrsoftware.org/isinfo.php, free) and press Ctrl+F9.
+2. Hand over `installer-out\Setup-AerChain-V0-Demo.exe`. It installs a Start
+   Menu / desktop app literally called **AerChain V0 (Demo)**, per-user (no
+   admin), with an uninstaller included. First launch behaves exactly like
+   the raw exe above.
+
 Still external (by design, never inside the exe):
 - **Ollama + model** (~5 GB) — only for offline mode; switch in Settings.
 - **Tesseract** — only for photo/scan uploads (degraded mode otherwise).
