@@ -23,6 +23,8 @@ setup.bat      :: once: Python (+auto-install), Ollama (+auto-install), venv, pa
                :: (the ~4.7 GB model installs later from Settings -> Local model,
                ::  or skip downloads entirely with Groq cloud)
 run.bat        :: daily: http://localhost:8000/  (run.bat 8001 for a 2nd copy)
+               :: run.bat --headless : no window, no browser (stop with stop.bat)
+stop.bat       :: stop a headless (or any) server by port
 share.bat      :: public link for someone far away (needs run.bat going)
 package.bat    :: hand to another computer (clean tarball, no secrets) run from repo root
 cd ..\desktop
