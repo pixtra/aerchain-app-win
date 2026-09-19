@@ -17,7 +17,9 @@ build-exe.bat
 ```
 Produces `dist\AerchainDesktop.exe` — **one file, hand it over**. First launch
 creates `%APPDATA%\AerchainDesktop` (database + settings) and defaults to
-keyless demo cloud, so it works immediately with zero installs.
+keyless demo cloud, so it works immediately with zero installs. Windowed
+build: no terminal ever opens; if anything fails, read
+`%APPDATA%\AerchainDesktop\app.log`.
 
 ## Ship as Setup-AerChain-V0-Demo.exe (client installer)
 1. Build the exe above, then open `installer.iss` in **Inno Setup 6**

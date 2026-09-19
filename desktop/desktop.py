@@ -31,6 +31,11 @@ if getattr(sys, "frozen", False):
                               os.path.join(_MEIPASS, "tess"))
     os.chdir(_DATA)
     sys.path.insert(0, _MEIPASS)
+    # windowed exe has no console: route all output to a log file instead of
+    # crashing on print() or losing tracebacks silently.
+    _log = open(os.path.join(_DATA, "app.log"), "a", encoding="utf-8")
+    sys.stdout = _log
+    sys.stderr = _log
 else:
     ROOT = os.path.dirname(os.path.abspath(__file__))
     # own database: never touch any other copy's DB (must precede app imports,

@@ -30,7 +30,7 @@ if exist "tess\tesseract.exe" (
   echo Bundling portable Tesseract...
   set TESSDATA=--add-data "tess;tess"
 )
-.venv\Scripts\python -m PyInstaller --noconfirm --clean --onefile --console --name AerchainDesktop --add-data "static;static" %TESSDATA% --collect-submodules app desktop.py
+.venv\Scripts\python -m PyInstaller --noconfirm --clean --onefile --windowed --name AerchainDesktop --add-data "static;static" %TESSDATA% --collect-submodules app desktop.py
 if errorlevel 1 (
   echo ERROR: build failed - see messages above.
   exit /b 1
