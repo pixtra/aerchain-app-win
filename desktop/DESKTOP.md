@@ -27,6 +27,13 @@ keyless demo cloud, so it works immediately with zero installs.
    admin), with an uninstaller included. First launch behaves exactly like
    the raw exe above.
 
+To bundle prerequisites (bigger Setup.exe, zero extra steps for the client):
+download `OllamaSetup.exe` (ollama.com/download) and the UB-Mannheim w64
+`TesseractSetup.exe`, place both next to `installer.iss`, recompile. They
+appear as pre-ticked tasks and install silently first (their own UAC prompt
+may appear — normal). Omit either file to skip it; the app degrades
+gracefully (Groq/keyless instead of Ollama; degraded image OCR).
+
 Still external (by design, never inside the exe):
 - **Ollama + model** (~5 GB) — only for offline mode; switch in Settings.
 - **Tesseract** — only for photo/scan uploads (degraded mode otherwise).
